@@ -21,6 +21,10 @@ defmodule Grid do
     grid |> length
   end
 
+  def in_bounds?(grid, x, y) do
+    x >= 0 && y >= 0 && x < Grid.width(grid) && y < Grid.height(grid)
+  end
+
   def to_string(grid) do
     grid 
       |> Stream.map(&List.to_string/1) 

@@ -28,6 +28,19 @@ defmodule GridTest do
     assert Grid.height(grid) == 4
   end
 
+  test "checks if coords are in bounds" do
+    grid = Grid.create(3,4,'#')
+
+    assert Grid.in_bounds?(grid, 0, 0) == true
+    assert Grid.in_bounds?(grid, 2, 0) == true
+    assert Grid.in_bounds?(grid, 0, 3) == true
+    assert Grid.in_bounds?(grid, 2, 3) == true
+    assert Grid.in_bounds?(grid, -1, 0) == false
+    assert Grid.in_bounds?(grid, 0, -1) == false
+    assert Grid.in_bounds?(grid, 3, 0) == false
+    assert Grid.in_bounds?(grid, 0, 4) == false
+  end
+
   test "generates a string representation" do
     s = Grid.create(3,4,'#') |> Grid.to_string
 
