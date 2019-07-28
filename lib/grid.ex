@@ -1,5 +1,4 @@
 defmodule Grid do
-
   def new(width, height, c) do
     row = :array.new([{:size, width}, {:fixed, true}, {:default, c}])
     :array.new([{:size, height}, {:fixed, true}, {:default, row}])
@@ -23,7 +22,7 @@ defmodule Grid do
   def set(grid, [], _c), do: grid
 
   def width(grid) do
-    :array.get(0, grid) |> :array.size
+    :array.get(0, grid) |> :array.size()
   end
 
   def height(grid) do
@@ -36,11 +35,9 @@ defmodule Grid do
 
   def to_string(grid) do
     :array.to_list(grid)
-      |> Stream.map(&:array.to_list/1)
-      |> Stream.map(&List.to_string/1) 
-      |> Stream.map(fn r -> r <> "\n" end)
-      |> Enum.join
+    |> Stream.map(&:array.to_list/1)
+    |> Stream.map(&List.to_string/1)
+    |> Stream.map(fn r -> r <> "\n" end)
+    |> Enum.join()
   end
-  
 end
-
