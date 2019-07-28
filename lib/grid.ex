@@ -1,24 +1,33 @@
 defmodule Grid do
 
-  def create(width, height, c) do
-    c |> List.duplicate(width) |> List.duplicate(height)
+  def new(width, height, c) do
+    row = :array.new([{:size, width}, {:fixed, true}, {:default, c}])
+    :array.new([{:size, height}, {:fixed, true}, {:default, row}])
   end
 
   def at(grid, x, y) do
-    grid |> Enum.at(y) |> Enum.at(x)
+    row = :array.get(y, grid)
+    :array.get(x, row)
   end
 
   def set(grid, x, y, c) do
-    new_row = grid |> Enum.at(y) |> List.replace_at(x, c) 
-    List.replace_at(grid, y, new_row)
+    row = :array.get(y, grid)
+    row = :array.set(x, c, row)
+    :array.set(y, row, grid)
   end
 
+  def set(grid, [{x, y} | t], c) do
+    set(set(grid, x, y, c), t, c)
+  end
+
+  def set(grid, [], _c), do: grid
+
   def width(grid) do
-    grid |> Enum.at(0) |> length
+    :array.get(0, grid) |> :array.size
   end
 
   def height(grid) do
-    grid |> length
+    :array.size(grid)
   end
 
   def in_bounds?(grid, x, y) do
@@ -26,9 +35,10 @@ defmodule Grid do
   end
 
   def to_string(grid) do
-    grid 
+    :array.to_list(grid)
+      |> Stream.map(&:array.to_list/1)
       |> Stream.map(&List.to_string/1) 
-      |> Enum.map(fn r -> r <> "\n" end)
+      |> Stream.map(fn r -> r <> "\n" end)
       |> Enum.join
   end
   
