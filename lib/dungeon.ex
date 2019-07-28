@@ -3,17 +3,21 @@ defmodule Dungeon do
     grid = Grid.new(width, height, '#')
     start_pos = {div(width, 2), div(height, 2)}
 
-    add_feature(grid, start_pos, 100)
+    add_feature(grid, start_pos, 0.6)
   end
 
-  defp add_feature(grid, pos, cnt) do
+  def fill_level(grid) do
+    max(Grid.count(grid, '.'), 1) / max(Grid.count(grid, '#'), 1)
+  end
+
+  defp add_feature(grid, pos, trsh) do
     {grid, pos} =
       case :rand.uniform(10) < 3 do
         true -> try_make_room(grid, pos, random_direction())
         false -> try_make_corridor(grid, pos, random_direction())
       end
 
-    if cnt > 0, do: add_feature(grid, pos, cnt - 1), else: grid
+    if fill_level(grid) < trsh, do: add_feature(grid, pos, trsh), else: grid
   end
 
   defp try_make_room(grid, {sx, sy}, {dir_x, dir_y}) do
