@@ -29,9 +29,19 @@ defmodule Grid do
     :array.size(grid)
   end
 
-  def in_bounds?(grid, x, y) do
-    x >= 0 && y >= 0 && x < Grid.width(grid) && y < Grid.height(grid)
+  def in_bounds?(grid, {x, y}, offset) do
+    x >= offset &&
+      y >= offset &&
+      x + offset < Grid.width(grid) - offset &&
+      y + offset < Grid.height(grid) - offset
   end
+
+  def in_bounds?(grid, [h | t], offset) do
+    in_bounds?(grid, h, offset) and in_bounds?(grid, t, offset)
+  end
+
+  def in_bounds?(grid, [], _), do: true
+  def in_bounds?(grid, p, offset \\ 0), do: in_bounds?(grid, p, offset)
 
   def to_string(grid) do
     :array.to_list(grid)
