@@ -11,7 +11,7 @@ defmodule GridTest do
   test "sets and gets a cell" do
     grid = Grid.new(3, 4, '#') |> Grid.set(1, 0, '@')
 
-    assert grid |> Grid.at(1, 0) == '@'
+    assert grid |> Grid.at({1, 0}) == '@'
   end
 
   test "reads dimensions" do
@@ -55,5 +55,13 @@ defmodule GridTest do
     g = g |> Grid.set(0, 0, '.')
     assert g |> Grid.count('#') == 11
     assert g |> Grid.count('.') == 1
+  end
+
+  test "checks if all points have given char" do
+    g = Grid.new(3, 4, '#') |> Grid.set(0, 0, '.')
+
+    assert Grid.all?(g, [{0, 1}, {1, 1}], '#') == true
+    assert Grid.all?(g, [{0, 0}], '.') == true
+    assert Grid.all?(g, [{0, 0}, {0, 1}], '.') == false
   end
 end

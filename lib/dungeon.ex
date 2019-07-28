@@ -1,10 +1,10 @@
 defmodule Dungeon do
-  @fill_treshold 0.6
+  @fill_treshold 0.5
   @room_chance_percent 10
-  @room_size_min 3
-  @room_size_max 8
-  @corridor_len_min 4
-  @corridor_len_max 10
+  @room_min 3
+  @room_max 8
+  @corridor_min 4
+  @corridor_max 8
 
   def generate(width, height) do
     grid = Grid.new(width, height, '#')
@@ -18,39 +18,42 @@ defmodule Dungeon do
   end
 
   defp add_features(grid, pos, trsh) do
-    {grid, pos} =
+    {points, new_pos} =
       case :rand.uniform(100) < @room_chance_percent do
-        true -> try_make_room(grid, pos, random_direction())
-        false -> try_make_corridor(grid, pos, random_direction())
+        true -> make_room(pos, random_direction())
+        false -> make_corridor(pos, random_direction())
+      end
+
+    {grid, pos} =
+      case try_put(grid, points) do
+        {:ok, grid} -> {grid, new_pos}
+        {:fail, grid} -> {grid, pos}
       end
 
     if fill_level(grid) < trsh, do: add_features(grid, pos, trsh), else: grid
   end
 
-  defp try_make_room(grid, {sx, sy}, {dir_x, dir_y}) do
-    {x_size, y_size} = {
-      random(@room_size_min, @room_size_max),
-      random(@room_size_min, @room_size_max)
-    }
-
-    {ex, ey} = {sx + dir_x + x_size, sy + dir_y + y_size}
-    points = rect_points({sx, sy}, {ex, ey})
-
+  defp try_put(grid, points) do
     case Grid.in_bounds?(grid, points, 1) do
-      true -> {Grid.set(grid, points, '.'), Enum.random(points)}
-      false -> {grid, {sx, sy}}
+      true -> {:ok, Grid.set(grid, points, '.')}
+      false -> {:fail, grid}
     end
   end
 
-  defp try_make_corridor(grid, {sx, sy}, {dir_x, dir_y}) do
-    len = random(@corridor_len_min, @corridor_len_max)
+  defp make_room({sx, sy}, {dir_x, dir_y}) do
+    {x_size, y_size} = {random(@room_min, @room_max), random(@room_min, @room_max)}
+    {ex, ey} = {sx + dir_x + x_size, sy + dir_y + y_size}
+    points = rect_points({sx, sy}, {ex, ey})
+
+    {points, Enum.random(points)}
+  end
+
+  defp make_corridor({sx, sy}, {dir_x, dir_y}) do
+    len = random(@corridor_min, @corridor_max)
     {ex, ey} = {sx + dir_x * len, sy + dir_y * len}
     points = rect_points({sx, sy}, {ex, ey})
 
-    case Grid.in_bounds?(grid, points, 1) do
-      true -> {Grid.set(grid, points, '.'), hd(points)}
-      false -> {grid, {sx, sy}}
-    end
+    {points, hd(points)}
   end
 
   defp rect_points({sx, sy}, {ex, ey}) do

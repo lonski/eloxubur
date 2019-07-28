@@ -4,9 +4,15 @@ defmodule Grid do
     :array.new([{:size, height}, {:fixed, true}, {:default, row}])
   end
 
-  def at(grid, x, y) do
+  def at(grid, {x, y}) do
     row = :array.get(y, grid)
     :array.get(x, row)
+  end
+
+  def all?(grid, points, c) do
+    points
+    |> Enum.map(fn p -> Grid.at(grid, p) end)
+    |> Enum.all?(&(&1 == c))
   end
 
   def count(grid, c) do
