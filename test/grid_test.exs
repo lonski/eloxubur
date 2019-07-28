@@ -47,4 +47,13 @@ defmodule GridTest do
 
     assert grid == "#..\n#.#\n###\n###\n"
   end
+
+  test "counts cells" do
+    g = Grid.new(3, 4, '#')
+    assert g |> Grid.count('#') == 12
+    assert g |> Grid.count('.') == 0
+    g = g |> Grid.set(0, 0, '.')
+    assert g |> Grid.count('#') == 11
+    assert g |> Grid.count('.') == 1
+  end
 end
