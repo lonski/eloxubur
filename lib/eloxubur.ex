@@ -1,18 +1,17 @@
 defmodule Eloxubur do
-  @moduledoc """
-  Documentation for Eloxubur.
-  """
+  @behaviour Ratatouille.App
 
-  @doc """
-  Hello world.
+  def init(context) do
+    GameState.new(context[:window][:width], context[:window][:height])
+  end
 
-  ## Examples
+  def update(state, {:event, %{ch: ch}}) do
+    ScreenLogic.update(state, ch)
+  end
 
-      iex> Eloxubur.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def render(state) do
+    ScreenUi.render(state)
   end
 end
+
+Ratatouille.run(Eloxubur)

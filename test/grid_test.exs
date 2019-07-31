@@ -64,4 +64,13 @@ defmodule GridTest do
     assert Grid.all?(g, [{0, 0}], '.') == true
     assert Grid.all?(g, [{0, 0}, {0, 1}], '.') == false
   end
+
+  test "gets a sample" do 
+    g = Grid.new(3, 4, '#') |> Grid.set(0, 0, '.') |> Grid.set(0,1,'.')
+
+    {x, y} = Grid.sample(g, '.')
+
+    assert x == 0
+    assert y == 0 || y == 1
+  end
 end

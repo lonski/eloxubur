@@ -1,5 +1,5 @@
 defmodule Dungeon do
-  @fill_treshold 0.5
+  @fill_treshold 0.3
   @room_chance_percent 10
   @room_min 3
   @room_max 8
@@ -20,8 +20,12 @@ defmodule Dungeon do
   defp add_features(grid, pos, trsh) do
     {points, new_pos} =
       case :rand.uniform(100) < @room_chance_percent do
-        true -> make_room(pos, random_direction())
-        false -> make_corridor(pos, random_direction())
+        true -> 
+          points = make_room(pos, random_direction())
+          {points, Enum.random(points)}
+        false ->
+          points = make_corridor(pos, random_direction())
+          {points, hd(points)}
       end
 
     {grid, pos} =
@@ -42,18 +46,16 @@ defmodule Dungeon do
 
   defp make_room({sx, sy}, {dir_x, dir_y}) do
     {x_size, y_size} = {random(@room_min, @room_max), random(@room_min, @room_max)}
+    x_size = if dir_x != 0, do: x_size * dir_x, else: x_size
+    y_size = if dir_y != 0, do: y_size * dir_y, else: y_size
     {ex, ey} = {sx + dir_x + x_size, sy + dir_y + y_size}
-    points = rect_points({sx, sy}, {ex, ey})
-
-    {points, Enum.random(points)}
+    rect_points({sx, sy}, {ex, ey})
   end
 
   defp make_corridor({sx, sy}, {dir_x, dir_y}) do
     len = random(@corridor_min, @corridor_max)
     {ex, ey} = {sx + dir_x * len, sy + dir_y * len}
-    points = rect_points({sx, sy}, {ex, ey})
-
-    {points, hd(points)}
+    rect_points({sx, sy}, {ex, ey})
   end
 
   defp rect_points({sx, sy}, {ex, ey}) do
@@ -61,7 +63,7 @@ defmodule Dungeon do
   end
 
   defp random_direction() do
-    [{-1, 0}, {1, 0}, {0, -1}, {0, 1}] |> Enum.random()
+    [{-1, 0}, {1, 0}, {0, -1}, {0, 1}] |> Enum.reverse() |> Enum.random()
   end
 
   defp random(from, to), do: :rand.uniform(to - from - 1) + from - 1

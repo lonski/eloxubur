@@ -9,6 +9,15 @@ defmodule Grid do
     :array.get(x, row)
   end
 
+  def sample(grid, c) do
+    x = :rand.uniform(width(grid)) - 1
+    y = :rand.uniform(height(grid)) - 1
+    case at(grid, {x, y}) do
+      ^c -> {x, y}
+      _ -> sample(grid, c)
+    end
+  end
+
   def all?(grid, points, c) do
     points
     |> Enum.map(fn p -> Grid.at(grid, p) end)
