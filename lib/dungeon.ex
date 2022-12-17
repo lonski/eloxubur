@@ -1,5 +1,5 @@
 defmodule Dungeon do
-  @fill_treshold 0.3
+  @fill_threshold 0.3
   @room_chance_percent 10
   @room_min 3
   @room_max 8
@@ -10,7 +10,7 @@ defmodule Dungeon do
     grid = Grid.new(width, height, '#')
     start_pos = {div(width, 2), div(height, 2)}
 
-    add_features(grid, start_pos, @fill_treshold)
+    add_features(grid, start_pos, @fill_threshold)
   end
 
   def fill_level(grid) do
@@ -20,9 +20,10 @@ defmodule Dungeon do
   defp add_features(grid, pos, trsh) do
     {points, new_pos} =
       case :rand.uniform(100) < @room_chance_percent do
-        true -> 
+        true ->
           points = make_room(pos, random_direction())
           {points, Enum.random(points)}
+
         false ->
           points = make_corridor(pos, random_direction())
           {points, hd(points)}
