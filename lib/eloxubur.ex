@@ -1,6 +1,8 @@
 defmodule Eloxubur do
   @behaviour Ratatouille.App
 
+  import GameState
+
   def init(context) do
     GameState.new(context[:window][:width], context[:window][:height])
   end
