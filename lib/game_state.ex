@@ -26,7 +26,7 @@ defmodule GameState do
     {x, y} = player.pos
 
     player =
-      if Grid.at(dungeon, {x + dx, y + dy}) == '.' do
+      if not Grid.is_blocked?(dungeon, {x + dx, y + dy}) do
         %{player | pos: {x + dx, y + dy}}
       else
         %{player | pos: {x, y}}
