@@ -4,8 +4,8 @@ defmodule Eloxubur.MixProject do
   def project do
     [
       app: :eloxubur,
-      version: "0.1.0",
-      elixir: "~> 1.8",
+      version: "0.2.0",
+      elixir: "~> 1.14.0",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -21,7 +21,7 @@ defmodule Eloxubur.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ratatouille, "~> 0.4.0"}
+      {:ratatouille, "~> 0.5.1"}
     ]
   end
 end

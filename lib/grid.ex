@@ -12,6 +12,7 @@ defmodule Grid do
   def sample(grid, c) do
     x = :rand.uniform(width(grid)) - 1
     y = :rand.uniform(height(grid)) - 1
+
     case at(grid, {x, y}) do
       ^c -> {x, y}
       _ -> sample(grid, c)
@@ -49,6 +50,10 @@ defmodule Grid do
 
   def height(grid) do
     :array.size(grid)
+  end
+
+  def is_blocked?(grid, {_x, _y} = position) do
+    at(grid, position) != '.'
   end
 
   def in_bounds?(grid, p, offset \\ 0)
